@@ -36,35 +36,52 @@ public class Test1 {
 				
 				webClient.getOptions().setJavaScriptEnabled(false);
 				webClient.getOptions().setCssEnabled(false);
-				page1 = webClient.getPage("https://digilib.itb.ac.id/index.php/collection/type/7/10");
-				List<DomElement> listUl =  page1.getElementsByTagName("ul"); 
-				int index = 0; 
-				if( listUl.size() > 0) {
-					for(DomElement el : listUl) {
-						HtmlElement element = (HtmlElement) el; 
-						int numChild = element.getChildElementCount(); 
-						if( numChild == 10) {
-							Iterable<DomElement> it = element.getChildElements(); 
-							Iterator<DomElement> iterator = it.iterator();
-							while( iterator.hasNext()) {
-								HtmlElement child = (HtmlElement) iterator.next(); 
-								DomNodeList<HtmlElement> list2 =  child.getElementsByTagName("div"); 
-								if( list2.size() >1) {
-									HtmlElement elem = list2.get(1); 
-									DomNodeList<HtmlElement > ll = elem.getElementsByTagName("a"); 
-									if(ll.size() > 0) {
-										HtmlElement link = ll.get(0);
-										String s = link.getAttribute("href"); 
-										String hasil = openInNewWindow(s, Integer.toString(++index));
-										out2.println(hasil); 
-									}								
-								}
-								
-							}
-						}
-					}
-				}
 				
+				int pagenumber = 0; 
+				int index = 0; 
+				while(true) {
+					String topage= Integer.toString(pagenumber);
+					if(pagenumber == 0) {
+						topage = ""; 
+					}
+					String pagetToOpen = "https://digilib.itb.ac.id/index.php/collection/type/7/" + topage ;
+					page1 = webClient.getPage( pagetToOpen);
+					List<DomElement> listUl =  page1.getElementsByTagName("ul"); 
+				
+					if( listUl.size() > 0) {
+						for(DomElement el : listUl) {
+							HtmlElement element = (HtmlElement) el; 
+							int numChild = element.getChildElementCount(); 
+							if( numChild == 10) {
+								System.out.println("start to process: " + pagetToOpen); 
+								Iterable<DomElement> it = element.getChildElements(); 
+								Iterator<DomElement> iterator = it.iterator();
+								while( iterator.hasNext()) {
+									HtmlElement child = (HtmlElement) iterator.next(); 
+									DomNodeList<HtmlElement> list2 =  child.getElementsByTagName("div"); 
+									if( list2.size() >1) {
+										HtmlElement elem = list2.get(1); 
+										DomNodeList<HtmlElement > ll = elem.getElementsByTagName("a"); 
+										if(ll.size() > 0) {
+											HtmlElement link = ll.get(0);
+											String s = link.getAttribute("href"); 
+											String hasil = openInNewWindow(s, Integer.toString(++index));
+											out2.println(hasil); 
+										}								
+									}
+									
+								}
+							}
+
+						}
+
+					}else {
+						break;
+					}
+					
+					pagenumber+= 10;
+
+				}
 				out2.close();
 				out1.close();
 				out3.close(); 
@@ -73,6 +90,7 @@ public class Test1 {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
 
 	}
 	
